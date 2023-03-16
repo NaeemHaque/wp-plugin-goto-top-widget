@@ -1,0 +1,10 @@
+#scrollUp {
+    background-image: url("../../assets/images/top.png");
+    background-color: black;
+    bottom: 5px;
+    right: 5px;
+    width: 38px;    
+    height: 38px;  
+    text-indent: -9999999px;
+    display: block;
+}
