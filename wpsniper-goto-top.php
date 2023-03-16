@@ -50,9 +50,6 @@ final class WPSniper_GoToTop
         add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_styles']);
         add_action('wp_footer', [$this, 'wpSniperGoToTopButton']);
-
-//        add_action('customize_register', [$this, 'wpSniperGoToTopCustomizerSettings']);
-//        add_action('wp_head', [$this, 'wpSniperGoToTopCustomizerStyles']);
     }
 
     /*
@@ -143,17 +140,18 @@ final class WPSniper_GoToTop
      */
     function wpSniperGoToTopCustomizerSettings($wp_customize)
     {
+        // Adding Section for customization
         $wp_customize->add_section('wpsniper_gttop_section', array(
             'title'       => __('WPSniper Goto Top', 'wpsniper-gttop'),
-            'priority'    => 200,
+            'priority'    => 20,
             'description' => __('Customize the "go to top" button.', 'wpsniper-gttop'),
         ));
 
+        // Adding Background Color
         $wp_customize->add_setting('wpsniper_gttop_setting', array(
             'default'   => '#000000',
             'transport' => 'refresh',
         ));
-
         $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'wpsniper_gttop_control', array(
             'label'    => __('Background Color', 'wpsniper-gttop'),
             'section'  => 'wpsniper_gttop_section',
@@ -171,6 +169,91 @@ final class WPSniper_GoToTop
             'section' => 'wpsniper_gttop_section',
             'type'    => 'text',
         ));
+
+        // Adding position of the button
+        $wp_customize->add_setting('wpsniper_gttop_bottom', array(
+            'default'     => '5px',
+            'description' => 'Spacing from bottom of the page.',
+        ));
+        $wp_customize->add_control('wpsniper_gttop_bottom', array(
+            'label'   => 'Bottom',
+            'section' => 'wpsniper_gttop_section',
+            'type'    => 'text',
+        ));
+        $wp_customize->add_setting('wpsniper_gttop_right', array(
+            'default'     => '5px',
+            'description' => 'Spacing from right of the page.',
+        ));
+        $wp_customize->add_control('wpsniper_gttop_right', array(
+            'label'   => 'Right',
+            'section' => 'wpsniper_gttop_section',
+            'type'    => 'text',
+        ));
+
+        // Adding size of the button
+        $wp_customize->add_setting('wpsniper_gttop_width', array(
+            'default'     => '40px',
+            'description' => 'Width of the button.',
+        ));
+        $wp_customize->add_control('wpsniper_gttop_width', array(
+            'label'   => 'Width',
+            'section' => 'wpsniper_gttop_section',
+            'type'    => 'text',
+        ));
+        $wp_customize->add_setting('wpsniper_gttop_height', array(
+            'default'     => '40px',
+            'description' => 'Height of the button.',
+        ));
+        $wp_customize->add_control('wpsniper_gttop_height', array(
+            'label'   => 'Height',
+            'section' => 'wpsniper_gttop_section',
+            'type'    => 'text',
+        ));
+
+        // Adding border styles of the button
+
+        $wp_customize->add_setting('wpsniper_gttop_border_style', array(
+            'default'     => 'none',
+            'description' => 'Style of the border.',
+        ));
+        $wp_customize->add_control('wpsniper_gttop_border_style', array(
+            'label'   => 'Border Style',
+            'section' => 'wpsniper_gttop_section',
+            'type'    => 'select',
+            'choices' => array(
+                'none'   => 'None',
+                'solid'  => 'Solid',
+                'dotted' => 'Dotted',
+                'dashed' => 'Dashed',
+                'double' => 'Double',
+                'groove' => 'Groove',
+                'ridge'  => 'Ridge',
+                'inset'  => 'Inset',
+                'outset' => 'Outset',
+                'hidden' => 'Hidden',
+            ),
+        ));
+
+        $wp_customize->add_setting('wpsniper_gttop_border_color', array(
+            'default'   => '#000000',
+            'transport' => 'refresh',
+        ));
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'wpsniper_gttop_border_color', array(
+            'label'    => __('Border Color', 'wpsniper-gttop'),
+            'section'  => 'wpsniper_gttop_section',
+            'settings' => 'wpsniper_gttop_border_color',
+            'type'     => 'color',
+        )));
+
+        $wp_customize->add_setting('wpsniper_gttop_border_width', array(
+            'default'     => '1px',
+            'description' => 'Width of the border.',
+        ));
+        $wp_customize->add_control('wpsniper_gttop_border_width', array(
+            'label'   => 'Border Width',
+            'section' => 'wpsniper_gttop_section',
+            'type'    => 'text',
+        ));
     }
 
     /*
@@ -184,6 +267,13 @@ final class WPSniper_GoToTop
             #scrollUp {
                 background-color: <?php echo get_theme_mod('wpsniper_gttop_setting', '#000000'); ?> !important;
                 border-radius: <?php echo get_theme_mod('wpsniper_gttop_rounded_corner', '5px'); ?> !important;
+                bottom: <?php echo get_theme_mod('wpsniper_gttop_bottom', '5px'); ?> !important;
+                right: <?php echo get_theme_mod('wpsniper_gttop_right', '5px'); ?> !important;
+                width: <?php echo get_theme_mod('wpsniper_gttop_width', '40px'); ?> !important;
+                height: <?php echo get_theme_mod('wpsniper_gttop_height', '40px'); ?> !important;
+                border-width: <?php echo get_theme_mod('wpsniper_gttop_border_width', '1px'); ?> !important;
+                border-color: <?php echo get_theme_mod('wpsniper_gttop_border_color', '#000000'); ?> !important;
+                border-style: <?php echo get_theme_mod('wpsniper_gttop_border_style', 'none'); ?> !important;
             }
         </style>
 

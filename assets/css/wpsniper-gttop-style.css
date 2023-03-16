@@ -1,6 +1,11 @@
 #scrollUp {
     background-image: url("../../assets/images/top.png");
+    background-repeat: no-repeat;
+    background-position: center center;
     background-color: black;
+    border-width: 2px;
+    border-style: none;
+    border-color: #000000;
     bottom: 5px;
     right: 5px;
     width: 38px;    
