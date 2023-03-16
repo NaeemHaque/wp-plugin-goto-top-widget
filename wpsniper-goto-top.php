@@ -25,104 +25,182 @@ defined('ABSPATH') or die;
  * Domain Path: /languages
  *
  */
+/*
+  * The main plugin class
+  */
 
-function wpsniper_gttop_enqueue_scripts()
+final class WPSniper_GoToTop
 {
-    wp_enqueue_script('jquery');
-    wp_enqueue_script('wpsniper-gttop', plugin_dir_url(__FILE__) . 'assets/js/wpsniper-gttop-script.js',
-        array('jquery'), '1.0.0', true);
-}
 
-add_action('wp_enqueue_scripts', 'wpsniper_gttop_enqueue_scripts');
+    /*
+     * Plugin version
+     */
+    const version = '1.0.0';
 
-function wpsniper_gttop_enqueue_styles()
-{
-    wp_enqueue_style('wpsniper-gttop', plugin_dir_url(__FILE__) . 'assets/css/wpsniper-gttop-style.css', array(),
-        '1.0.0', 'all');
-}
+    /*
+     * Class constructor
+     */
+    private function __construct()
+    {
+        $this->define_constant();
 
-add_action('wp_enqueue_scripts', 'wpsniper_gttop_enqueue_styles');
+        register_activation_hook(__FILE__, [$this, 'activate']);
 
-function wpsniper_gttop_script()
-{
-    ?>
-    <script type="text/javascript">
-        jQuery(document).ready(function ($) {
-            $.scrollUp();
-        });
-    </script>
-    <?php
-}
+        add_action('plugins_loaded', [$this, 'init_plugin']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_scripts']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_styles']);
+        add_action('wp_footer', [$this, 'wpSniperGoToTopButton']);
 
-add_action('wp_footer', 'wpsniper_gttop_script');
+//        add_action('customize_register', [$this, 'wpSniperGoToTopCustomizerSettings']);
+//        add_action('wp_head', [$this, 'wpSniperGoToTopCustomizerStyles']);
+    }
 
+    /*
+     * Initialize a singleton instance
+     * @return \WPSniper_GoToTop
+     */
+    public static function init()
+    {
+        static $instance = false;
 
-// register customization menu option in theme customizer
-function wpsniper_gttop_customize_register($wp_customize)
-{
-    $wp_customize->add_section('wpsniper_gttop_section', array(
-        'title'       => __('WPSniper Goto Top', 'wpsniper-gttop'),
-        'priority'    => 200,
-        'description' => __('Customize the "go to top" button.', 'wpsniper-gttop'),
-    ));
-
-    $wp_customize->add_setting('wpsniper_gttop_setting', array(
-        'default'   => '#000000',
-        'transport' => 'refresh',
-    ));
-
-    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'wpsniper_gttop_control', array(
-        'label'    => __('Background Color', 'wpsniper-gttop'),
-        'section'  => 'wpsniper_gttop_section',
-        'settings' => 'wpsniper_gttop_setting',
-        'type'     => 'color',
-    )));
-
-    // add option for rounded corners
-    $wp_customize->add_setting('wpsniper_gttop_rounded_corners', array(
-        'default'   => false,
-        'transport' => 'refresh',
-    ));
-
-    // add control for rounded corners
-//    $wp_customize->add_control(new WP_Customize_Control($wp_customize, 'wpsniper_gttop_rounded_corners_control', array(
-//        'label'    => __('Rounded Corners', 'wpsniper-gttop'),
-//        'section'  => 'wpsniper_gttop_section',
-//        'settings' => 'wpsniper_gttop_rounded_corners',
-//        'type'     => 'checkbox',
-//    )));
-
-
-    // Adding Rounded Corner
-    $wp_customize ->add_setting('wpsniper_gttop_rounded_corner', array(
-        'default' => '5px',
-        'description' => 'If you need fully rounded or circular then use 25px here.',
-    ));
-    $wp_customize->add_control('wpsniper_gttop_rounded_corner', array(
-        'label'   => 'Rounded Corner',
-        'section' => 'wpsniper_gttop_section',
-        'type'    => 'text',
-    ));
-
-
-}
-
-add_action('customize_register', 'wpsniper_gttop_customize_register');
-
-// apply customizations
-function wpsniper_gttop_customize_css()
-{
-    ?>
-    <style type="text/css">
-        #scrollUp {
-            background-color: <?php echo get_theme_mod('wpsniper_gttop_setting', '#000000'); ?> !important;
-            border-radius: <?php echo get_theme_mod('wpsniper_gttop_rounded_corner', '5px'); ?> !important;
+        if ( ! $instance) {
+            $instance = new self();
         }
-    </style>
-    <?php
+
+        return $instance;
+    }
+
+    /*
+     * Define all constant
+     */
+    public function define_constant()
+    {
+        define('WPSNIPER_GTTOP_VERSION', self::version);
+        define('WPSNIPER_GTTOP_FILE', __FILE__);
+        define('WPSNIPER_GTTOP_PATH', __DIR__);
+        define('WPSNIPER_GTTOP_URL', plugins_url('', WPSNIPER_GTTOP_FILE));
+        define('WPSNIPER_GTTOP_ASSETS', WPSNIPER_GTTOP_URL . '/assets');
+    }
+
+    /*
+     * Do stuff upon plugin activation
+     * @return void
+     */
+    public function activate()
+    {
+        update_option('wpsniper_gttop_version', WPSNIPER_GTTOP_VERSION);
+    }
+
+    /*
+     * Initialize the plugin classes
+     * @return void
+     */
+    public function init_plugin()
+    {
+        add_action('customize_register', [$this, 'wpSniperGoToTopCustomizerSettings']);
+        add_action('wp_head', [$this, 'wpSniperGoToTopCustomizerStyles']);
+    }
+
+    /*
+     * Enqueue scripts
+     * @return void
+     */
+    public function enqueue_scripts()
+    {
+        wp_enqueue_script('jquery');
+        wp_enqueue_script('wpsniper-gttop', WPSNIPER_GTTOP_ASSETS . '/js/wpsniper-gttop-script.js', ['jquery'],
+            WPSNIPER_GTTOP_VERSION, true);
+    }
+
+    /*
+     * Enqueue styles
+     * @return void
+     */
+    public function enqueue_styles()
+    {
+        wp_enqueue_style('wpsniper-gttop', WPSNIPER_GTTOP_ASSETS . '/css/wpsniper-gttop-style.css', [],
+            WPSNIPER_GTTOP_VERSION);
+    }
+
+    /*
+     * Add the "go to top" button
+     * @return void
+     */
+    function wpSniperGoToTopButton()
+    {
+        ?>
+        <script type="text/javascript">
+            jQuery(document).ready(function ($) {
+                $.scrollUp();
+            });
+        </script>
+        <?php
+    }
+
+    /*
+     * Add customizer settings
+     * @return void
+     */
+    function wpSniperGoToTopCustomizerSettings($wp_customize)
+    {
+        $wp_customize->add_section('wpsniper_gttop_section', array(
+            'title'       => __('WPSniper Goto Top', 'wpsniper-gttop'),
+            'priority'    => 200,
+            'description' => __('Customize the "go to top" button.', 'wpsniper-gttop'),
+        ));
+
+        $wp_customize->add_setting('wpsniper_gttop_setting', array(
+            'default'   => '#000000',
+            'transport' => 'refresh',
+        ));
+
+        $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'wpsniper_gttop_control', array(
+            'label'    => __('Background Color', 'wpsniper-gttop'),
+            'section'  => 'wpsniper_gttop_section',
+            'settings' => 'wpsniper_gttop_setting',
+            'type'     => 'color',
+        )));
+
+        // Adding Rounded Corner
+        $wp_customize->add_setting('wpsniper_gttop_rounded_corner', array(
+            'default'     => '5px',
+            'description' => 'If you need fully rounded or circular then use 25px here.',
+        ));
+        $wp_customize->add_control('wpsniper_gttop_rounded_corner', array(
+            'label'   => 'Rounded Corner',
+            'section' => 'wpsniper_gttop_section',
+            'type'    => 'text',
+        ));
+    }
+
+    /*
+     * Apply customizer styles
+     * @return void
+     */
+    function wpSniperGoToTopCustomizerStyles()
+    {
+        ?>
+        <style type="text/css">
+            #scrollUp {
+                background-color: <?php echo get_theme_mod('wpsniper_gttop_setting', '#000000'); ?> !important;
+                border-radius: <?php echo get_theme_mod('wpsniper_gttop_rounded_corner', '5px'); ?> !important;
+            }
+        </style>
+
+        <?php
+    }
 }
 
-add_action('wp_head', 'wpsniper_gttop_customize_css');
 
+/*
+ * Initialize the main plugin
+ * @return \WPSniper_GoToTop
+ */
+function wpSniperGoToTop()
+{
+    return WPSniper_GoToTop::init();
+}
+
+wpSniperGoToTop();
 
 ?>
