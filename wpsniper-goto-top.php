@@ -12,15 +12,14 @@ defined('ABSPATH') or die;
  *
  * Plugin Name: WPSniper Goto Top
  * Plugin URI: https://wordpress.org/plugins/wpsniper-goto-top
- * Description: Adds a "go to top" button to your WordPress site.
+ * Description: Add a customizable 'goto top' button to your WordPress website.
  * Version: 1.0.0
  * Requires at least: 5.2
  * Requires PHP: 7.2
- * Author: WPSniper
- * Author URI: https://example.com/
+ * Author: naeemhaque
+ * Author URI: https://profiles.wordpress.org/naeemhaque/
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Update URI:  https://github.com/NaeemHaque/wpsniper-goto-top
  * Text Domain: wpsniper-gttop
  * Domain Path: /languages
  *
@@ -69,6 +68,7 @@ final class WPSniper_GoToTop
 
     /*
      * Define all constant
+     * @return void
      */
     public function define_constant()
     {
@@ -144,7 +144,7 @@ final class WPSniper_GoToTop
         $wp_customize->add_section('wpsniper_gttop_section', array(
             'title'       => __('WPSniper Goto Top', 'wpsniper-gttop'),
             'priority'    => 20,
-            'description' => __('Customize the "go to top" button.', 'wpsniper-gttop'),
+            'description' => __('Customize the "Goto Top" button.', 'wpsniper-gttop'),
         ));
 
         // Adding Background Color
