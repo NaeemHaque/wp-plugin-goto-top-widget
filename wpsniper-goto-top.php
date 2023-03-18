@@ -3,13 +3,6 @@
 defined('ABSPATH') or die;
 
 /**
- * WPSniper Goto Top
- *
- * @package WPSniper_Goto_Top
- * @author WPSniper
- * @copyright Copyright (c) WPSniper
- * @license GPL-2.0-or-later
- *
  * Plugin Name: WPSniper Goto Top
  * Plugin URI: https://wordpress.org/plugins/wpsniper-goto-top
  * Description: Add a customizable 'goto top' button to your WordPress website.

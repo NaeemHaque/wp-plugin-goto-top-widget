@@ -27,7 +27,7 @@ Features:
 
 1. Log in to your WordPress admin panel and go to Plugins -> Add New
 2. Type WPSniper Goto Top in the search box and click on search button.
-3. Find ID Back To Top plugin.
+3. Find WPSniper Goto Top plugin.
 4. Then click on Install Now after that activate the plugin.
 5. Go to Theme Customization option and click on WPSniper Goto Top to customize the button text, icon, and style.
 
